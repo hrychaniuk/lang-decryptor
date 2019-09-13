@@ -3,3 +3,5 @@ module.exports = {
     '@vue/app'
   ]
 }
+//http://kleki.com/
+//http://sum.in.ua/api
