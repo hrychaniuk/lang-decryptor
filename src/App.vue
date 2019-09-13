@@ -11,18 +11,32 @@
 
     <ul class="langs">
       <li class="lang" :key="native.name" v-for="native in native">
-        <div class="lang-img">
-          {{native.name}}
-        </div>
+        <div class="lang-img">{{native.name}}</div>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import words from "@/../words.alien.json";
+import axios from "axios";
+// import words from "@/../words.alien.json";
 import aliens from "@/../lang.alien.json";
 import native from "@/../lang.native.json";
+
+const check = word => {
+  return new Promise((correct, uncorrect) => {
+    axios.get(`http://sum.in.ua/?swrd=${word}`).then(
+      ({ data }) => {
+        const search = data.search('itemprop="headline"');
+        if (search > 0) correct(word);
+        else uncorrect(word);
+      },
+      () => {
+        uncorrect();
+      }
+    );
+  });
+};
 
 export default {
   name: "app",
@@ -31,7 +45,27 @@ export default {
     native
   }),
   created() {
-    console.log(aliens);
+    const arr = [
+      "сідло",
+      "коняка",
+      "жупан",
+      "аляска",
+      "квітка",
+      "мара2",
+      "мара",
+      "здав"
+    ];
+
+    arr.forEach(word => {
+      check(word).then(
+        r => {
+          console.warn("SUCCES", r);
+        },
+        e => {
+          console.error("ERROR", e); 
+        }
+      );
+    });
   }
 };
 </script>
